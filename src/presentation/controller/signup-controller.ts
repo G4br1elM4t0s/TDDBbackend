@@ -7,21 +7,11 @@ import { HttpRequest, HttpResponse } from "../protocols/http"
 export class SignupController {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const { email, name, password, confirmPassword } = httpRequest.body
-    if (!email) {
-      return badRequest(new MissingParamError("email"))
-    }
-
-    if (!name) {
-      return badRequest(new MissingParamError("name"))
-    }
-
-    if (!password) {
-      return badRequest(new MissingParamError("password"))
-    }
-
-    if (!confirmPassword) {
-      return badRequest(new MissingParamError("confirmPassword"))
+    const requiredFields = ["email", "password", "name", "confirmPassword"]
+    for (const field of requiredFields) {
+      if (!httpRequest.body[field]) {
+        return badRequest(new MissingParamError(field))
+      }
     }
 
     return {
